@@ -6,7 +6,7 @@ Digital Image Process website
 ### git
 git clone https://github.com/liuchengyuan123/DIP_using_flask/
 
-pip3 install -r requirements.txt
+sudo pip install -r .\requirements.txt -i http://pypi.douban.com/simple/ --trusted-host pypi.douban.com
 
 ### run
 python3 app.py
