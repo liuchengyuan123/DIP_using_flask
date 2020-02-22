@@ -1,0 +1,10 @@
+flask
+flask-bootstrap
+flask-wtf
+wtforms
+werkzeug
+numpy
+opencv-python
+pillow
+scikit-image
+matplotlib
