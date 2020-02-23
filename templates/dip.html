@@ -3,48 +3,99 @@
 {% import "bootstrap/wtf.html" as wtf %}
 </br>
 <div class="row">
-    <div class="col" style="position: relative; left: 80px;">
+    <div class="col" style="position: relative; left: 170px;">
         <div class="btn-toolbar" role="toolbar">
-            <div class="btn-group dropdown" role="group" aria-label="">
-                <button class="btn btn-warning dropdown-toggle" data-toggle="dropdown" id="dropdown-rotate"
-                    aria-haspopup="true" aria-expanded="false">
-                    旋转
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdown-rotate">
-                    <li><a href="{{ url_for('rotate1') }}">顺时针</a></li>
-                    <li><a href="{{ url_for('rotate2') }}">逆时针</a></li>
-                    <li role="separator" class="divider"></li>
-                    <li><a href="#" data-toggle="modal" data-target="#RotateModal">自定义</a></li>
-                </ul>
-            </div>
-
-            <div class="btn-group dropdown" role="group" aria-label="">
-                <button class="btn btn-warning dropdown-toggle" data-toggle="dropdown" id="dropdown-zoom"
-                    aria-haspopup="true" aria-expanded="false">
-                    缩放
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdown-zoom">
-                    <li><a href="#" onclick="zoom_In();">放大</a></li>
-                    <li><a href="#" onclick="zoom_Out();">缩小</a></li>
-                </ul>
+            <div class="btn-group" role="group" aria-label="">
+                <button class="btn btn-primary" onclick="showHistogram();">直方图</button>
+                <button class="btn btn-primary" onclick="showFFT();">FFT</button>
+                <button class="btn btn-primary" onclick="showDCT();">DCT</button>
             </div>
             <div class="btn-group" role="group" aria-label="">
-                <button class="btn btn-warning">添加文字</button>
+                <button class="btn btn-primary" onclick="smoothen();">平滑</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#SharpenModal">锐化</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#FilterModal">滤镜</button>
+                <div class="btn-group dropdown" role="group" aria-label="">
+                    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="dropdown-rotate"
+                        aria-haspopup="true" aria-expanded="false">
+                        直方图拉伸
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdown-rotate">
+                        <li><a href="#" data-toggle="modal" data-target="#LinearStretchModal">线性</a></li>
+                        <li><a href="#" data-toggle="modal" data-target="#UnLinearStretchModal">非线性</a></li>
+                        <li><a href="{{ url_for('equalization') }}">均衡</a></li>
+                    </ul>
+                </div>
+                <button class="btn btn-primary" data-toggle="modal"
+                    data-target="#ColorSpaceReverseModal">色彩空间转换</button>
             </div>
         </div>
     </div>
 </div>
-<div class="modal fade" id="RotateModal" tabindex="-1" role="dialog">
+<!-- 直方图模态框 -->
+<div class="modal fade" id="HistModal" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="myModalLabel">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">旋转</h4>
+                <h4 class="modal-title" id="HistModalLabel"></h4>
+            </div>
+            <div class="modal-body" id="HistModalBody">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <!-- <button type="button" class="btn btn-primary">提交更改</button> -->
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<!-- FFT模态框 -->
+<div class="modal fade" id="FFTModal" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="myModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="FFTModalLabel"></h4>
+            </div>
+            <div class="modal-body" id="FFTModalBody">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <!-- <button type="button" class="btn btn-primary">提交更改</button> -->
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<!--DCT模态框 -->
+<div class="modal fade" id="DCTModal" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="myModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="DCTModalLabel"></h4>
+            </div>
+            <div class="modal-body" id="DCTModalBody">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <!-- <button type="button" class="btn btn-primary">提交更改</button> -->
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<!-- 锐化模态框 -->
+<div class="modal fade" id="SharpenModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="">锐化</h4>
             </div>
             <div class="modal-body">
-                {{ wtf.quick_form(rotate_form) }}
+                {{ wtf.quick_form(sharpen_form) }}
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-dark" data-dismiss="modal">关闭</button>
@@ -52,6 +103,142 @@
         </div>
     </div>
 </div>
+<!-- 滤镜模态框 -->
+<div class="modal fade" id="FilterModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">滤镜</h4>
+            </div>
+            <div class="modal-body">
+                {{ wtf.quick_form(filter_form) }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 线性拉伸模态框 -->
+<div class="modal fade" id="LinearStretchModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="">直方图线性拉伸</h4>
+            </div>
+            <div class="modal-body">
+                {{ wtf.quick_form(linear_form) }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 非线性拉伸模态框 -->
+<div class="modal fade" id="UnLinearStretchModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="">直方图非线性拉伸</h4>
+            </div>
+            <div class="modal-body">
+                {{ wtf.quick_form(unlinear_form) }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 色彩空间转换模态框 -->
+<div class="modal fade" id="ColorSpaceReverseModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="">色彩空间转换</h4>
+            </div>
+            <div class="modal-body">
+                {{ wtf.quick_form(color_space_reverse_form) }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+    function smoothen() {
+        $.ajax({
+            type: "GET",
+            url: "/smooth",
+            dataType: "html",
+            success: function() {
+                console.log("smoothen over");
+            }
+        });
+    }
+    function showHistogram() {
+        $.ajax({
+            type: "POST",
+            url: "/histogram",
+            dataType: "text",
+            success: function (data) {
+                console.log("success!")
+                console.log(data);
+                document.getElementById("HistModalLabel").innerHTML = '直方图';
+                document.getElementById("HistModalBody").innerHTML = "<img src='" + data + "' width='100%;'>";
+                $("#HistModal").modal();
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    }
+    function showFFT() {
+        $.ajax({
+            type: "POST",
+            url: "/FFTDCT",
+            dataType: "text",
+            data: { "operation": "fft" },
+            success: function (data) {
+                console.log("success!")
+                console.log(data);
+                document.getElementById("FFTModalLabel").innerHTML = 'FFT';
+                document.getElementById("FFTModalBody").innerHTML = "";
+                document.getElementById("FFTModalBody").innerHTML = "<img src='" + data + "' width='100%;'>";
+                $("#FFTModal").modal();
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    }
+    function showDCT() {
+        $.ajax({
+            type: "POST",
+            url: "/FFTDCT",
+            dataType: "text",
+            data: { "operation": "dct" },
+            success: function (data) {
+                console.log("success!")
+                console.log(data);
+                document.getElementById("DCTModalLabel").innerHTML = 'DCT';
+                document.getElementById("DCTModalBody").innerHTML = "";
+                document.getElementById("DCTModalBody").innerHTML = "<img src='" + data + "' width='100%;'>";
+                $("#DCTModal").modal();
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    }
 </script>
+
 {% endblock %}
