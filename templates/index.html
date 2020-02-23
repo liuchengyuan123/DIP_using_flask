@@ -9,9 +9,9 @@
                 <button class="btn btn-info" data-toggle="modal" data-target="#UploadModal">打开</button>
             </div>
             <div class="btn-group" role="group" aria-label="">
-                <button class="btn btn-info">撤销</button>
-                <button class="btn btn-info">重做</button>
-                <button class="btn btn-info" onclick="">原图</button>
+                <button class="btn btn-info" onclick="undo();">撤销</button>
+                <button class="btn btn-info" onclick="redo();">重做</button>
+                <button class="btn btn-info" onclick="getOrg();">原图</button>
             </div>
             <div class="btn-group" role="group" aria-label="">
                 <button class="btn btn-info">分享</button>
@@ -36,5 +36,42 @@
         </div>
     </div>
 </div>
+<script>
+    function getOrg() {
+        console.log("before send org request");
+        $.ajax({
+            url: "/org",
+            type: "GET",
+            dataType: "html",
+            success: function(data) {
+                console.log("orign success");
+                // console.log(data);
+                window.location.href="/"
+            }
+        });
+    }
+    function undo() {
+        $.ajax({
+            url: "/undo",
+            type: "GET",
+            dataType: "html",
+            success: function(data) {
+                console.log("undo over");
+                window.location.href="/"
+            }
+        });
+    }
+    function redo() {
+        $.ajax({
+            url: "/redo",
+            type: "GET",
+            dataType: "html",
+            success: function() {
+                console.log("redo over");
+                window.location.href="/"
+            }
+        });
+    }
+</script>
 
 {% endblock %}
