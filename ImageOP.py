@@ -18,6 +18,7 @@ class ImageProcess():
         self.fromspace = None
         self.temp = 0
         self.orgFile = None
+        self.base_dir = "static/Image/"
 
     def PhotoOpen(self,filename, change=False):
         if change:
@@ -35,26 +36,27 @@ class ImageProcess():
             img = color.rgba2rgb(self.img)
             self.fromspace = 'RGB'
         converted_image = color.convert_colorspace(img,self.fromspace,toSpace) # having limits
-        io.imsave('temp'+str(self.temp)+'.'+self.format,converted_image)
-        return 'temp'+str(self.temp)+'.'+self.format
+        io.imsave(self.base_dir+'temp'+str(self.temp)+'.'+self.format,converted_image)
+        return 'static/Image/temp'+str(self.temp)+'.'+self.format
 
     def FftDct(self,op):
-        print('in ImageOP.FftDct')
         if op == 'fft':
+            print('in ImageOP.fft operation')
             self.temp = self.temp + 1
             img = color.rgb2gray(self.img)
             img = np.float32(img)
             fft_img = np.fft.fftshift(np.fft.fft2(img))
             fft_img = np.log(np.abs(fft_img)+1)
-            io.imsave('temp'+ str(self.temp)+'.'+self.format, fft_img)
+            io.imsave('static/Image/temp'+ str(self.temp)+'.'+self.format, fft_img)
         elif op == 'dct':
+            print('in ImageOP.dct operation')
             self.temp = self.temp + 1
             img_cv = cv2.cvtColor(self.img_cv,cv2.COLOR_BGRA2GRAY)
             img_cv = img_cv.astype(np.float32)
             dct_img = cv2.dct(img_cv)
             dct_img = np.log(np.abs(dct_img)+1e-5)
-            io.imsave('temp'+ str(self.temp)+'.'+self.format, dct_img)
-        return 'temp' + str(self.temp) + '.' + self.format
+            io.imsave('static/Image/temp'+ str(self.temp)+'.'+self.format, dct_img)
+        return 'static/Image/temp' + str(self.temp) + '.' + self.format
 
     def Hist(self):
         self.temp = self.temp + 1
@@ -66,7 +68,7 @@ class ImageProcess():
             for i in range(3):
                 hist, hist_centers = histogram(self.img[ :, :,i])
                 plt.plot(hist_centers,hist,lw=2)
-        plt.savefig('temp'+str(self.temp)+'.'+self.format)
+        plt.savefig('static/Image/temp'+str(self.temp)+'.'+self.format)
         plt.clf()
         return 'static/Image/temp'+str(self.temp)+'.'+self.format
 
@@ -80,7 +82,7 @@ class ImageProcess():
                     else:
                         img[i,j] = a * img[i,j] + b
                     img[i,j] = np.uint8(img[i,j])
-            io.imsave('temp'+str(self.temp)+'.'+self.format, img)
+            io.imsave('static/Image/temp'+str(self.temp)+'.'+self.format, img)
         else:
             img = self.img
             for i in range(self.img.shape[2]):
@@ -91,44 +93,44 @@ class ImageProcess():
                         else:
                             img[j,k,i] = a * img[j,k,i] + b
                         img[j,k,i] = np.uint8(img[j,k,i])
-            io.imsave('temp'+str(self.temp)+'.'+self.format, img)
-        return 'temp' + str(self.temp) + '.' + self.format
+            io.imsave('static/Image/temp'+str(self.temp)+'.'+self.format, img)
+        return 'static/Image/temp' + str(self.temp) + '.' + self.format
 
     def Hist_gamma(self,gamma,gain = 1):
         self.temp = self.temp + 1
         img = img_as_float(self.img)
         gamma_corrected = adjust_gamma(img,gamma,gain)
-        io.imsave('temp'+ str(self.temp)+'.'+self.format, gamma_corrected)
-        return 'temp'+str(self.temp)+'.'+self.format
+        io.imsave('static/Image/temp'+ str(self.temp)+'.'+self.format, gamma_corrected)
+        return 'static/Image/temp'+str(self.temp)+'.'+self.format
     def Hist_sigmoid(self):
         self.temp = self.temp + 1
         img = img_as_float(self.img)
         sigmoid_corrected = adjust_sigmoid(img)
-        io.imsave('temp'+ str(self.temp)+'.'+ self.format, sigmoid_corrected)
-        return 'temp'+str(self.temp)+'.'+self.format
+        io.imsave('static/Image/temp'+ str(self.temp)+'.'+ self.format, sigmoid_corrected)
+        return 'static/Image/temp'+str(self.temp)+'.'+self.format
     def Hist_log(self):
         self.temp = self.temp + 1
         img = img_as_float(self.img)
         log_corrected = adjust_log(img)
-        io.imsave('temp'+ str(self.temp)+'.'+self.format, log_corrected)
-        return 'temp'+str(self.temp)+'.'+self.format
+        io.imsave('static/Image/temp'+ str(self.temp)+'.'+self.format, log_corrected)
+        return 'static/Image/temp'+str(self.temp)+'.'+self.format
     def Hist_equalize(self):
         self.temp = self.temp + 1
         img = img_as_ubyte(self.img)
         img = equalize_hist(img)
-        io.imsave('temp'+ str(self.temp)+'.'+self.format, img)
-        return 'temp'+str(self.temp)+'.'+self.format
+        io.imsave('static/Image/temp'+ str(self.temp)+'.'+self.format, img)
+        return 'static/Image/temp'+str(self.temp)+'.'+self.format
 
     def RotateOP(self,anger = 90):
         self.temp = self.temp + 1
         img = transform.rotate(self.img,anger)
-        io.imsave('temp'+ str(self.temp)+'.'+self.format, img)
-        return 'temp'+str(self.temp)+'.'+self.format
+        io.imsave('static/Image/temp'+ str(self.temp)+'.'+self.format, img)
+        return 'static/Image/temp'+str(self.temp)+'.'+self.format
     def ResizeOP(self,size):
         self.temp = self.temp + 1
         img = transform.resize(self.img,size)
-        io.imsave('temp'+str(self.temp)+'.'+self.format,img)
-        return 'temp'+str(self.temp)+'.'+self.format
+        io.imsave('static/Image/temp'+str(self.temp)+'.'+self.format,img)
+        return 'static/Image/temp'+str(self.temp)+'.'+self.format
 
     def WordAdd(self,area,contend,color,size):
         self.temp = self.temp + 1
@@ -136,25 +138,25 @@ class ImageProcess():
         im = self.im
         draw = ImageDraw.Draw(im)
         draw.text(area,contend,color,font =setFont)
-        im.save('temp'+str(self.temp)+'.'+self.format)
-        return 'temp'+str(self.temp)+'.'+self.format
+        im.save('static/Image/temp'+str(self.temp)+'.'+self.format)
+        return 'static/Image/temp'+str(self.temp)+'.'+self.format
 
     def BSCenhance(self,bright_factor = 1.2, sharp_factor = 1.2, contrast_factor = 1.2, choice = 'bright'):
         self.temp = self.temp+1
         if choice == 'sharp':
             Simg = ImageEnhance.Sharpness(self.im)
             Simg = Simg.enhance(sharp_factor)
-            Simg.save('temp' + str(self.temp) + '.' + self.format)
+            Simg.save('static/Image/temp' + str(self.temp) + '.' + self.format)
         elif choice == 'contrast':
             Cimg = ImageEnhance.Contrast(self.im)
             Cimg = Cimg.enhance(contrast_factor)
-            Cimg.save('temp' + str(self.temp) + '.' + self.format)
+            Cimg.save('static/Image/temp' + str(self.temp) + '.' + self.format)
         elif choice == 'bright':
             Bimg = ImageEnhance.Brightness(self.im)
             Bimg = Bimg.enhance(bright_factor)
-            Bimg.save('temp' + str(self.temp) + '.' + self.format)
+            Bimg.save('static/Image/temp' + str(self.temp) + '.' + self.format)
 
-        return 'temp'+ str(self.temp)+'.'+self.format
+        return 'static/Image/temp'+ str(self.temp)+'.'+self.format
 
     def filters(self,filtername):
         kernel1 = np.array([[.11,.11,.11],[.11,.11,.11],[.11,.11,.11]])
@@ -166,27 +168,27 @@ class ImageProcess():
         if filtername == 'gaussian':
             self.temp = self.temp + 1
             gaussian = cv2.filter2D(self.img_cv, -1, kernel_gaussian)
-            cv2.imwrite('temp'+ str(self.temp)+'.'+self.format, gaussian)
+            cv2.imwrite('static/Image/temp'+ str(self.temp)+'.'+self.format, gaussian)
         elif filtername == 'emboss':
             self.temp = self.temp + 1
             emboss = cv2.filter2D(self.img_cv, -1, kernel_emboss)
             emboss = cv2.cvtColor(emboss, cv2.COLOR_BGR2GRAY)
-            cv2.imwrite('temp'+ str(self.temp)+'.'+self.format, emboss)
+            cv2.imwrite('static/Image/temp'+ str(self.temp)+'.'+self.format, emboss)
         elif filtername == 'edge':
             self.temp = self.temp + 1
             edge = cv2.filter2D(self.img_cv, -1, kernel_edge)
-            cv2.imwrite('temp'+ str(self.temp)+'.'+self.format, edge)
+            cv2.imwrite('static/Image/temp'+ str(self.temp)+'.'+self.format, edge)
         elif filtername == 'sharp':
             self.temp = self.temp + 1
             sharp = cv2.filter2D(self.img_cv, -1, kernel_sharp)
-            cv2.imwrite('temp'+ str(self.temp)+'.'+ self.format, sharp)
+            cv2.imwrite('static/Image/temp'+ str(self.temp)+'.'+ self.format, sharp)
         elif filtername == 'rect':
             self.temp = self.temp + 1
             rect = cv2.filter2D(self.img_cv,-1,kernel1)
-            cv2.imwrite('temp'+ str(self.temp)+'.'+self.format,rect)
+            cv2.imwrite('static/Image/temp'+ str(self.temp)+'.'+self.format,rect)
         else:
             pass
-        return 'temp'+ str(self.temp)+'.'+self.format
+        return 'static/Image/temp'+ str(self.temp)+'.'+self.format
 
 # if __name__ == '__main__':
 #     c = ImageProcess()
