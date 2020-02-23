@@ -32,14 +32,51 @@
         </div>
     </div>
 </div>
+<!-- 直方图模态框 -->
 <div class="modal fade" id="HistModal" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="myModalLabel">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="ModalLabel"></h4>
+                <h4 class="modal-title" id="HistModalLabel"></h4>
             </div>
-            <div class="modal-body" id="ModalBody">
+            <div class="modal-body" id="HistModalBody">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <!-- <button type="button" class="btn btn-primary">提交更改</button> -->
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<!-- FFT模态框 -->
+<div class="modal fade" id="FFTModal" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="myModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="FFTModalLabel"></h4>
+            </div>
+            <div class="modal-body" id="FFTModalBody">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <!-- <button type="button" class="btn btn-primary">提交更改</button> -->
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<!--DCT模态框 -->
+<div class="modal fade" id="DCTModal" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="myModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="DCTModalLabel"></h4>
+            </div>
+            <div class="modal-body" id="DCTModalBody">
 
             </div>
             <div class="modal-footer">
@@ -89,7 +126,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="">直方图线性拉伸/h4>
+                <h4 class="modal-title" id="">直方图线性拉伸</h4>
             </div>
             <div class="modal-body">
                 {{ wtf.quick_form(linear_form) }}
@@ -107,7 +144,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="">直方图非线性拉伸/h4>
+                <h4 class="modal-title" id="">直方图非线性拉伸</h4>
             </div>
             <div class="modal-body">
                 {{ wtf.quick_form(unlinear_form) }}
@@ -137,6 +174,15 @@
 </div>
 
 <script>
+    function delay(numberMillis) {
+        var now = new Date();
+        var exitTime = now.getTime() + numberMillis;
+        while (true) {
+            now = new Date();
+            if (now.getTime() > exitTime)
+                return;
+        }
+    }
     function showHistogram() {
         $.ajax({
             type: "POST",
@@ -145,8 +191,9 @@
             success: function (data) {
                 console.log("success!")
                 console.log(data);
-                document.getElementById("ModalLabel").innerHTML = '直方图';
-                document.getElementById("ModalBody").innerHTML = data;
+                document.getElementById("HistModalLabel").innerHTML = '直方图';
+                delay(2000);
+                document.getElementById("HistModalBody").innerHTML = "<img src='" + data + "' width='100%;'>";
                 $("#HistModal").modal();
             },
             error: function (xhr, status, error) {
@@ -159,13 +206,15 @@
             type: "POST",
             url: "/FFTDCT",
             dataType: "text",
-            data: { "operation": "FFT" },
+            data: { "operation": "fft" },
             success: function (data) {
                 console.log("success!")
                 console.log(data);
-                document.getElementById("ModalLabel").innerHTML = 'FFT';
-                document.getElementById("ModalBody").innerHTML = data;
-                $("#HistModal").modal();
+                document.getElementById("FFTModalLabel").innerHTML = 'FFT';
+                document.getElementById("FFTModalBody").innerHTML = "";
+                delay(2000);
+                document.getElementById("FFTModalBody").innerHTML = "<img src='" + data + "' width='100%;'>";
+                $("#FFTModal").modal();
             },
             error: function (xhr, status, error) {
                 console.log(error);
@@ -177,13 +226,15 @@
             type: "POST",
             url: "/FFTDCT",
             dataType: "text",
-            data: { "operation": "DCT" },
+            data: { "operation": "dct" },
             success: function (data) {
                 console.log("success!")
                 console.log(data);
-                document.getElementById("ModalLabel").innerHTML = 'DCT';
-                document.getElementById("ModalBody").innerHTML = data;
-                $("#HistModal").modal();
+                document.getElementById("DCTModalLabel").innerHTML = 'DCT';
+                document.getElementById("DCTModalBody").innerHTML = "";
+                delay(2000);
+                document.getElementById("DCTModalBody").innerHTML = "<img src='" + data + "' width='100%;'>";
+                $("#DCTModal").modal();
             },
             error: function (xhr, status, error) {
                 console.log(error);
