@@ -3,14 +3,14 @@ from flask_bootstrap import Bootstrap
 from forms import *
 import os
 from werkzeug.utils import secure_filename
-# from ImageOP import ImageProcess
+from ImageOP import ImageProcess
 
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 bootstrap = Bootstrap(app)
 app.config["SECRET_KEY"] = "A-VERY-LONG-SECRET-KEY"
 filename = ""
-# iop = ImageProcess()
+iop = ImageProcess()
 
 @app.route("/", methods=["POST", "GET"])
 def index():
@@ -24,14 +24,15 @@ def index():
         ))
         print(filename)
         try:
-            # iop.PhotoOpen(filename)
+            iop.PhotoOpen(filename)
             flash("上传成功: " + filename, category="success")
         # return redirect(url_for('index'))
         except:
             flash("文件打开失败", category="danger")
-            return render_template("index.html", upload_file_form=form, filename=filename)
     if filename == "":
         flash("请打开图片", category="warning")
+    if filename:
+        iop.PhotoOpen(filename)
     return render_template("index.html", upload_file_form=form, filename=filename)
 
 @app.route("/basic", methods=["POST", "GET"])
@@ -42,10 +43,9 @@ def basic():
     rotate_form = RotateForm()
     if rotate_form.validate_on_submit():
         pass
-    
+    if filename:
+        iop.PhotoOpen(filename)
     return render_template("basic.html", filename=filename, rotate_form=rotate_form)
-
-hist = ""
 
 @app.route("/dip", methods=["POST", "GET"])
 def dip():
@@ -67,6 +67,8 @@ def dip():
     color_space_reverse_form = ColorSpaceReverseForm()
     if color_space_reverse_form.validate_on_submit():
         pass
+    if filename:
+        iop.PhotoOpen(filename)
     return render_template("dip.html", filename=filename, 
                     sharpen_form=sharpen_form, filter_form=filter_form, 
                     linear_form=linear_form, unlinear_form=unlinear_form,
@@ -75,14 +77,27 @@ def dip():
 @app.route("/histogram", methods=['POST', 'GET'])
 def histogram():
     print("in histogram")
-    # hist = iop.Hist()
-    # hist = os.path.join(basedir, "static/Image", hist)
-    return "Hello, I am Histogram"
+    hist = iop.Hist()
+    return hist
 
 @app.route("/FFTDCT", methods=["POST", "GET"])
 def FFTDCT():
-    print("in fft dct")
-    return "Hello, I am " + request.form.get("operation") + " result"
+    print("in fft dct", request.form.get("operation"))
+    ret = iop.FftDct(request.form.get("operation"))
+    print(ret)
+    return ret
+
+@app.route("/rotate1")
+def rotate1():
+    global filename
+    filename = iop.RotateOP(90)
+    return redirect(url_for("basic"))
+
+@app.route("/rotate2")
+def rotate2():
+    global filename
+    filename = iop.RotateOP(-90)
+    return redirect(url_for("basic"))
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
