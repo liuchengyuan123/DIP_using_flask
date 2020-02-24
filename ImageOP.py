@@ -23,6 +23,7 @@ class ImageProcess():
     def PhotoOpen(self,filename, change=False):
         if change:
             self.orgFile = filename
+            self.temp = 0
         self.img = io.imread(filename)
         self.im = Image.open(filename)
         self.img_cv = cv2.imread(filename)

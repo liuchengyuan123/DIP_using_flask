@@ -79,7 +79,7 @@ def dip():
         elif unlinear_form.function.data == 1:
             filename = iop.Hist_sigmoid()
         else:
-            filname = iop.Hist_log()
+            filename = iop.Hist_log()
     color_space_reverse_form = ColorSpaceReverseForm()
     if color_space_reverse_form.validate_on_submit():
         arr = ['RGB', 'HSV', 'RGB CIE', 'XYZ', 'YUV', 'YIQ', 'YPbPr', 'YCbCr']
@@ -94,7 +94,7 @@ def dip():
 @app.route("/equalization", methods=["POST", "GET"])
 def equalization():
     global filename
-    filname = iop.Hist_equalize()
+    filename = iop.Hist_equalize()
     return redirect(url_for("dip"))
 
 @app.route("/smooth", methods=["POST", "GET"])
