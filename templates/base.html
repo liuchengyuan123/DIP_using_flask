@@ -43,6 +43,7 @@
                     href="/basic">基础操作</a></li>
             <li role="presentation" class="{% if request.path == url_for('dip') %}active{% endif %}"><a
                     href="/dip">数图操作</a></li>
+            <li role="presentation"><a class="btn btn-success" href="/org">原图</a></li>
         </ul>
         {% block body %}
         {% endblock %}
