@@ -5,6 +5,7 @@ import os
 from werkzeug.utils import secure_filename
 from ImageOP import ImageProcess
 import numpy as np
+import pyperclip
 
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -46,7 +47,7 @@ def basic():
         return redirect(url_for("index"))
     rotate_form = RotateForm()
     if rotate_form.validate_on_submit():
-        pass
+        filename = iop.RotateOP(rotate_form.angle.data)
     if filename:
         iop.PhotoOpen(filename)
     return render_template("basic.html", filename=filename + "?randomstr=" + str(np.random.rand()), rotate_form=rotate_form)
@@ -91,6 +92,14 @@ def dip():
                     linear_form=linear_form, unlinear_form=unlinear_form,
                     color_space_reverse_form=color_space_reverse_form)
 
+@app.route("/share", methods=["POST", "GET"])
+def share():
+    global filename
+    url = "127.0.0.1:5000/" + filename
+    pyperclip.copy(url)
+    flash("图片已经黏贴到剪切板", category="success")
+    return "filename: " + url
+
 @app.route("/equalization", methods=["POST", "GET"])
 def equalization():
     global filename
@@ -101,7 +110,7 @@ def equalization():
 def smooth():
     global filename
     filename = iop.filters("rect")
-    return redirect(url_for("dip"))
+    return "smooth over py"
 
 @app.route("/histogram", methods=['POST', 'GET'])
 def histogram():
@@ -128,16 +137,19 @@ def org():
 @app.route("/undo", methods=["GET", "POST"])
 def undo():
     global filename
-    if iop.temp == 1:
+    print(iop.temp)
+    if iop.temp <= 1:
+        print("here")
         filename = iop.orgFile
         iop.PhotoOpen(iop.orgFile)
+        flash("已是最原始操作！", category="warning")
     else:
         iop.temp -= 1
         filename = iop.base_dir + 'temp'+str(iop.temp)+'.'+iop.format
         print("in undo")
         print(filename)
         iop.PhotoOpen(filename)
-    return redirect(url_for("index"))
+    return "undo over py"
 
 @app.route("/redo", methods=["GET", "POST"])
 def redo():
@@ -149,7 +161,7 @@ def redo():
     except:
         iop.temp -= 1
         flash("已经是最新操作！", category="warning")
-    return redirect(url_for("index"))
+    return "redo over py"
 
 @app.route("/rotate1")
 def rotate1():
