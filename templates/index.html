@@ -14,7 +14,7 @@
                 <button class="btn btn-info" onclick="getOrg();">原图</button>
             </div>
             <div class="btn-group" role="group" aria-label="">
-                <button class="btn btn-info">分享</button>
+                <button class="btn btn-info" onclick="share();">分享</button>
             </div>
         </div>
     </div>
@@ -37,16 +37,28 @@
     </div>
 </div>
 <script>
+    function share() {
+        $.ajax({
+            url: "/share",
+            type: "GET",
+            dataType: "text",
+            success: function(data) {
+                console.log("in share of javascript");
+                console.log(data);
+                window.location.href = "/";
+            }
+        });
+    };
     function getOrg() {
         console.log("before send org request");
         $.ajax({
             url: "/org",
             type: "GET",
-            dataType: "html",
+            dataType: "text",
             success: function(data) {
                 console.log("orign success");
                 // console.log(data);
-                window.location.href="/"
+                window.location.href="/";
             }
         });
     }
@@ -54,10 +66,10 @@
         $.ajax({
             url: "/undo",
             type: "GET",
-            dataType: "html",
+            dataType: "text",
             success: function(data) {
                 console.log("undo over");
-                window.location.href="/"
+                window.location.href="/";
             }
         });
     }
@@ -65,10 +77,10 @@
         $.ajax({
             url: "/redo",
             type: "GET",
-            dataType: "html",
+            dataType: "text",
             success: function() {
                 console.log("redo over");
-                window.location.href="/"
+                window.location.href="/";
             }
         });
     }
